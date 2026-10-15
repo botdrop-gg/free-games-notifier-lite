@@ -18,10 +18,10 @@ It remembers what it already posted in `posted.json`, so it only announces new g
 Tests: `pip install pytest && pytest -q`
 
 ## Want more?
-This is the free "lite" version. **[BotDrop](https://botdrop-gg.github.io/)** sells tested, Docker-ready, self-hosted Discord and Steam bot source code you own and can rebrand:
-- **[Free Games Radar](https://botdrop-gg.github.io/#products)**: Epic + Steam + GOG, upcoming games, Docker and deploy configs.
-- **[Discord Gaming Community Kit](https://botdrop-gg.github.io/discord-gaming-community-kit/)**: one bot with moderation, free games, Steam deals, patch notes, player counts and what-to-play.
-- **[The BotDrop Bundle](https://botdrop-gg.github.io/#bundle)**: all templates, launch price $29 (regular $49).
+This is the free "lite" version. **[BotDrop](https://getbotdrop.com/)** sells tested, Docker-ready, self-hosted Discord and Steam bot source code you own and can rebrand:
+- **[Free Games Radar](https://getbotdrop.com/#products)**: Epic + Steam + GOG, upcoming games, Docker and deploy configs.
+- **[Discord Gaming Community Kit](https://getbotdrop.com/discord-gaming-community-kit/)**: one bot with moderation, free games, Steam deals, patch notes, player counts and what-to-play.
+- **[The BotDrop Bundle](https://getbotdrop.com/#bundle)**: all templates, launch price $29 (regular $49).
 
 ## License
 MIT. Do whatever you like with it.
