@@ -1,7 +1,8 @@
 # Runs every 6 hours on GitHub for free. Add DISCORD_WEBHOOK_URL under Settings → Secrets → Actions.
 name: notify
 on:
-  schedule: [{cron: "0 */6 * * *"}]
+  schedule:
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 jobs:
   run:
@@ -9,6 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
-        with: {path: posted.json, key: posted-${{ github.run_id }}, restore-keys: posted-}
+        with:
+          path: posted.json
+          key: posted-${{ github.run_id }}
+          restore-keys: posted-
       - run: python notifier.py
-        env: {DISCORD_WEBHOOK_URL: "${{ secrets.DISCORD_WEBHOOK_URL }}"}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
