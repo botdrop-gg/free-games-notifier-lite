@@ -19,9 +19,9 @@ Tests: `pip install pytest && pytest -q`
 
 ## Want more?
 This is the free "lite" version. **[BotDrop](https://getbotdrop.com/)** sells tested, Docker-ready, self-hosted Discord and Steam bot source code you own and can rebrand:
-- **[Free Games Radar](https://getbotdrop.com/#products)**: Epic + Steam + GOG, upcoming games, Docker and deploy configs.
-- **[Discord Gaming Community Kit](https://getbotdrop.com/discord-gaming-community-kit/)**: one bot with moderation, free games, Steam deals, patch notes, player counts and what-to-play.
-- **[The BotDrop Bundle](https://getbotdrop.com/#bundle)**: all templates, launch price $29 (regular $49).
+- **[Free Games Radar](https://getbotdrop.com/free-games-radar/)** ($6): Epic + Steam + GOG, upcoming games, Docker and deploy configs.
+- **[Gaming Community Kit for Discord](https://getbotdrop.com/discord-gaming-community-kit/)** ($25): one bot with moderation, free games, Steam deals, patch notes, player counts and what-to-play.
+- **[BotDrop Bundle](https://getbotdrop.com/#bundle)**: all 10 templates for $29 (the 9 sold separately add up to $107).
 
 ## License
 MIT. Do whatever you like with it.
