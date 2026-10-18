@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Free Games Notifier Lite: posts Epic Games Store free games to a Discord webhook.
 Usage: DISCORD_WEBHOOK_URL=... python notifier.py   (omit the webhook to just print)"""
-import json, os, sys, urllib.request
+import json, os, sys, urllib.error, urllib.request
 from datetime import datetime, timezone
 
 API = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=en-US&country=US"
@@ -42,7 +42,13 @@ def main():
     if hook:
         req = urllib.request.Request(hook, data=json.dumps({"content": text}).encode(),
                                      headers={"Content-Type": "application/json", "User-Agent": "free-games-notifier-lite"})
-        urllib.request.urlopen(req, timeout=20)
+        try:
+            urllib.request.urlopen(req, timeout=20)
+        except urllib.error.HTTPError as e:
+            # Don't save state, so the games are retried next run.
+            hint = " (webhook deleted or URL mistyped?)" if e.code in (401, 404) else ""
+            print(f"Discord rejected the webhook: HTTP {e.code}{hint}", file=sys.stderr)
+            return 1
     json.dump(sorted(seen | {g["id"] for g in games}), open(STATE, "w"))
 
 if __name__ == "__main__":
