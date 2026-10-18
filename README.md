@@ -136,10 +136,10 @@ pytest -q
 
 ## Want more?
 
-This is the free version. [BotDrop](https://getbotdrop.com/) makes self-hosted Discord bots for gaming servers that you pay for once and own:
+This is the free version. [BotDrop](https://getbotdrop.com/) makes self-hosted Discord bots for gaming servers that you own and run yourself:
 
-- **[Free Games Radar](https://getbotdrop.com/free-games-radar/)**: free games from Epic, Steam and GOG, including upcoming giveaways.
-- **[Gaming Community Kit](https://getbotdrop.com/discord-gaming-community-kit/)**: one bot with auto-moderation, free games, Steam deals, patch notes and more.
+- **[Free Games Radar](https://getbotdrop.com/free-games-radar/)** (free for your email): free games from Epic, Steam and GOG, including upcoming giveaways, with a one-click Windows launcher (beta).
+- **[Gaming Community Kit](https://getbotdrop.com/discord-gaming-community-kit/)** ($25, pay once): one bot with auto-moderation, free games, Steam deals, patch notes and more.
 
 ## License
 
