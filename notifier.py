@@ -4,6 +4,8 @@ Usage: DISCORD_WEBHOOK_URL=... python notifier.py   (omit the webhook to just pr
 import json, os, sys, time, urllib.error, urllib.request
 from datetime import datetime, timezone
 
+__version__ = "1.0.1"
+
 API = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=en-US&country=US"
 STATE = os.getenv("STATE_FILE", "posted.json")
 
@@ -12,8 +14,18 @@ def get_json(url):
     with urllib.request.urlopen(req, timeout=20) as r:
         return json.load(r)
 
+def kind_of(g):
+    """'f2p_bonus' when Epic's regular price is 0: the game is already free-to-play, so the
+    "100% off" offer is an in-game bonus, not a paid game going free. 'addon' for DLC, else 'game'.
+    A missing or odd price block counts as a normal giveaway (we can't tell).
+    originalPrice is in the currency's smallest unit, so 0 means free in any currency."""
+    orig = (((g.get("price") or {}).get("totalPrice")) or {}).get("originalPrice")
+    if isinstance(orig, (int, float)) and not isinstance(orig, bool) and orig == 0:
+        return "f2p_bonus"
+    return "addon" if g.get("offerType") == "ADD_ON" else "game"
+
 def free_now(data, now=None):
-    """Return [{'id','title','url','until'}] for games that are 100% off right now."""
+    """Return [{'id','title','url','until','kind'}] for offers that are 100% off right now."""
     now = now or datetime.now(timezone.utc)
     games = []
     for g in data["data"]["Catalog"]["searchStore"]["elements"]:
@@ -24,11 +36,19 @@ def free_now(data, now=None):
                 if offer.get("discountSetting", {}).get("discountPercentage") == 0 and start <= now <= end:
                     slug = g.get("productSlug") or (g.get("catalogNs", {}).get("mappings") or [{}])[0].get("pageSlug")
                     url = f"https://store.epicgames.com/en-US/p/{slug}" if slug else "https://store.epicgames.com/free-games"
-                    games.append({"id": g["id"], "title": g["title"], "url": url, "until": end.strftime("%b %d")})
+                    games.append({"id": g["id"], "title": g["title"], "url": url, "until": end.strftime("%b %d"), "kind": kind_of(g)})
     return games
 
 def message(games):
-    lines = [f"🎁 **{g['title']}** is free on Epic until {g['until']}: <{g['url']}>" for g in games]
+    lines = []
+    for g in games:
+        kind = g.get("kind", "game")
+        if kind == "f2p_bonus":
+            lines.append(f"🎮 In-game bonus on Epic (game is free-to-play): **{g['title']}** until {g['until']}. Check the store page for details: <{g['url']}>")
+        elif kind == "addon":
+            lines.append(f"🧩 **{g['title']}** (add-on, needs the base game) is free on Epic until {g['until']}: <{g['url']}>")
+        else:
+            lines.append(f"🎁 **{g['title']}** is free on Epic until {g['until']}: <{g['url']}>")
     return "\n".join(lines)
 
 def main():

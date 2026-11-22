@@ -66,3 +66,32 @@ def test_no_webhook_does_not_mark_seen(tmp_path, monkeypatch, capsys):
 def test_retry_after_parsing():
     e = urllib.error.HTTPError("u", 429, "x", {"Retry-After": "0.1"}, io.BytesIO(b"{}")); assert notifier.retry_after(e) == 0.5
     e = urllib.error.HTTPError("u", 429, "x", {}, io.BytesIO(b'{"retry_after": 3}')); assert notifier.retry_after(e) == 3.0
+
+
+# --- free-to-play games: Epic's regular price is 0, so the offer is an in-game bonus, not a giveaway
+from notifier import kind_of
+def _el(id, title, price, otype="BASE_GAME"):
+    g = {"id": id, "title": title, "productSlug": id, "offerType": otype,
+         "promotions": {"promotionalOffers": offer("2026-10-10T00:00:00.000Z", "2026-10-17T00:00:00.000Z", 0)}}
+    if price is not None:
+        g["price"] = price
+    return g
+def _price(orig, cur="USD"): return {"totalPrice": {"originalPrice": orig, "discountPrice": 0, "currencyCode": cur, "currencyInfo": {"decimals": 2}}}
+F2P = {"data": {"Catalog": {"searchStore": {"elements": [
+    _el("f2p", "Idle Game", _price(0)), _el("paid", "Paid Game", _price(1999)), _el("noprice", "No Price", None),
+    _el("dlc", "Some DLC", _price(499), "ADD_ON"), _el("eur", "Euro F2P", _price(0, "EUR"))]}}}}
+def test_kinds():
+    k = {g["title"]: g["kind"] for g in free_now(F2P, NOW)}
+    assert k == {"Idle Game": "f2p_bonus", "Paid Game": "game", "No Price": "game", "Some DLC": "addon", "Euro F2P": "f2p_bonus"}
+def test_f2p_message_is_not_a_free_game_claim():
+    m = message([g for g in free_now(F2P, NOW) if g["title"] == "Idle Game"])
+    assert "In-game bonus on Epic (game is free-to-play)" in m and "is free on Epic" not in m
+def test_normal_giveaway_message_unchanged():
+    assert message([g for g in free_now(F2P, NOW) if g["title"] == "Paid Game"]).startswith("🎁 **Paid Game** is free on Epic until")
+def test_missing_or_odd_price_counts_as_game():
+    for price in (None, {}, {"totalPrice": None}, {"totalPrice": {}}, {"totalPrice": {"originalPrice": "0"}}, {"totalPrice": {"originalPrice": False}}):
+        assert kind_of({"price": price}) == "game"
+    assert kind_of({"price": None, "offerType": "ADD_ON"}) == "addon"
+def test_addon_message():
+    m = message([g for g in free_now(F2P, NOW) if g["title"] == "Some DLC"])
+    assert "add-on, needs the base game" in m

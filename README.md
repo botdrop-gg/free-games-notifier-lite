@@ -14,6 +14,7 @@ What it posts in your channel:
 ## Features
 
 - **Epic free games, automatically.** Checks Epic's public free-games feed and posts each game that is 100% off right now, with a store link and the end date.
+- **Honest about in-game bonuses.** Sometimes Epic runs a "free" offer on a game that is already free-to-play (for example an in-game item bundle). Lite spots these (Epic lists the game's regular price as 0) and posts them as "In-game bonus on Epic (game is free-to-play)", not as a free game. Add-ons say they need the base game.
 - **No repeats.** Remembers what it already posted in `posted.json`, so each giveaway is announced once.
 - **No bot, no token, no API keys.** It sends to a Discord **webhook**, so there's nothing to invite and no bot to keep online.
 - **Zero dependencies.** One file, Python standard library only (Python 3.9+).
@@ -124,6 +125,9 @@ Scheduled workflows on a public repo are free. Each run takes about 10 seconds.
 **Which region and prices does it use?**
 Epic's US store feed. Free giveaways are usually the same worldwide.
 
+**Why does it say "In-game bonus on Epic (game is free-to-play)"?**
+Epic's offer is for a game that already costs nothing to play, so what you get is an in-game bonus, not a paid game going free. Check the store page for what the bonus includes and how to claim it.
+
 **Can I change the message?**
 Yes. Edit the `message()` function in `notifier.py`.
 
@@ -133,6 +137,10 @@ Yes. Edit the `message()` function in `notifier.py`.
 pip install pytest
 pytest -q
 ```
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Want more?
 
